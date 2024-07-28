@@ -1,14 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
+import { type UseFormReturn } from "react-hook-form"
 
-import { register } from "@/lib/actions/auth"
-import { RegisterSchema, registerSchema } from "@/lib/validations/auth"
-import { Button } from "@/components/ui/button"
+import { RegisterSchema } from "@/lib/validations/auth"
 import {
   Form,
   FormControl,
@@ -18,39 +13,26 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Icons } from "@/components/icons"
 import { PasswordInput } from "@/components/password-input"
 
-export function RegisterForm() {
-  const router = useRouter()
-  const [isRegisterPending, startRegisterTransition] = React.useTransition()
+interface CreateUserFormProps
+  extends Omit<React.ComponentPropsWithRef<"form">, "onSubmit"> {
+  children: React.ReactNode
+  form: UseFormReturn<RegisterSchema>
+  onSubmit: (data: RegisterSchema) => void
+}
 
-  const form = useForm<RegisterSchema>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
-  })
-
-  async function onSubmit(input: RegisterSchema) {
-    startRegisterTransition(async () => {
-      const { error } = await register(input)
-
-      if (error) {
-        toast.error(error)
-        return
-      }
-
-      toast.success("Akun berhasil dibuat")
-      router.push(`${window.location.origin}/`)
-    })
-  }
-
+export function CreateUserForm({
+  form,
+  onSubmit,
+  children,
+}: CreateUserFormProps) {
   return (
     <Form {...form}>
-      <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -94,16 +76,7 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="mt-2" disabled={isRegisterPending}>
-          {isRegisterPending && (
-            <Icons.spinner
-              className="mr-2 size-4 animate-spin"
-              aria-hidden="true"
-            />
-          )}
-          Login
-          <span className="sr-only">Login</span>
-        </Button>
+        {children}
       </form>
     </Form>
   )

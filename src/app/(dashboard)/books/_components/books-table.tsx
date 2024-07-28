@@ -40,7 +40,7 @@ export function BooksTable({ booksPromise }: BooksTableProps) {
 
   return (
     <DataTable table={table}>
-      <BooksTableToolbarActions table={table} />
+      <BooksTableToolbarActions />
     </DataTable>
   )
 }

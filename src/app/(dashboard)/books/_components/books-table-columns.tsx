@@ -14,9 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { PreviewBooksDialog } from "@/app/(dashboard)/books/_components/preview-book-dialog"
+import { UpdateBookSheet } from "@/app/(dashboard)/books/_components/update-book-sheet"
 
 import { DeleteBooksDialog } from "./delete-books-dialog"
-import { UpdateBookSheet } from "./update-book-sheet"
 
 export function getColumns(): ColumnDef<Book>[] {
   return [

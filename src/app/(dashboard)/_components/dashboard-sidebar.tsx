@@ -11,12 +11,10 @@ import { Icons } from "@/components/icons"
 import { SidebarNav } from "@/components/layouts/sidebar-nav"
 
 interface DashboardSidebarProps extends React.HTMLAttributes<HTMLElement> {
-  storeId: string
   children: React.ReactNode
 }
 
 export function DashboardSidebar({
-  storeId,
   children,
   className,
   ...props
@@ -38,21 +36,21 @@ export function DashboardSidebar({
     },
     {
       title: "Pinjaman",
-      href: `/store/${storeId}/products`,
+      href: `/pinjaman`,
       icon: "bookmark",
-      active: segments.includes("products"),
+      active: segments.includes("pinjaman"),
     },
     {
       title: "Users",
-      href: `/store/${storeId}/customers`,
+      href: `/users`,
       icon: "avatar",
-      active: segments.includes("customers"),
+      active: segments.includes("users"),
     },
     {
       title: "Roles",
-      href: `/store/${storeId}/settings`,
+      href: `/roles`,
       icon: "settings",
-      active: segments.includes("settings"),
+      active: segments.includes("roles"),
     },
   ]
 

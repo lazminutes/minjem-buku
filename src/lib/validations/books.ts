@@ -9,44 +9,18 @@ export const createBookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
   image: z.string().optional(),
-  quantity: z
-    .union([
-      z.coerce
-        .number({
-          message: "must be a number",
-        })
-        .int({
-          message: "must be a whole number",
-        })
-        .positive({
-          message: "must be positive",
-        }),
-      z.literal(""),
-    ])
-    .optional(),
+  quantity: z.coerce.number().int().optional(),
 })
 
 export type CreateBookSchema = z.infer<typeof createBookSchema>
 
 export const updateBookSchema = z.object({
+  id: z.string().optional(),
   title: z.string().min(1),
   author: z.string().min(1),
   image: z.string().optional(),
-  quantity: z
-    .union([
-      z.coerce
-        .number({
-          message: "must be a number",
-        })
-        .int({
-          message: "must be a whole number",
-        })
-        .positive({
-          message: "must be positive",
-        }),
-      z.literal(""),
-    ])
-    .optional(),
+
+  quantity: z.coerce.number().int().optional(),
 })
 
 export type UpdateBookSchema = z.infer<typeof updateBookSchema>

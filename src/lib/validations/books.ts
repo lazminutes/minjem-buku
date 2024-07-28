@@ -9,7 +9,7 @@ export const createBookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
   image: z.string().optional(),
-  quantity: z.coerce.number().int().optional(),
+  quantity: z.coerce.number().int().optional().nullable(),
 })
 
 export type CreateBookSchema = z.infer<typeof createBookSchema>
@@ -18,7 +18,7 @@ export const updateBookSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1),
   author: z.string().min(1),
-  image: z.string().optional(),
+  image: z.string().optional().nullable(),
 
   quantity: z.coerce.number().int().optional(),
 })

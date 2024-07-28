@@ -7,7 +7,7 @@ import { takeFirstOrThrow } from "@/db/utils"
 import { eq } from "drizzle-orm"
 
 import { getErrorMessage } from "@/lib/handle-error"
-import { CreateBookSchema } from "@/lib/validations/books"
+import { CreateBookSchema, UpdateBookSchema } from "@/lib/validations/books"
 
 export async function createBook(input: CreateBookSchema) {
   noStore()
@@ -26,6 +26,33 @@ export async function createBook(input: CreateBookSchema) {
         })
         .then(takeFirstOrThrow)
     })
+
+    revalidatePath("/")
+
+    return {
+      data: null,
+      error: null,
+    }
+  } catch (err) {
+    return {
+      data: null,
+      error: getErrorMessage(err),
+    }
+  }
+}
+
+export async function updateBook(input: UpdateBookSchema & { id: string }) {
+  noStore()
+  try {
+    await db
+      .update(books)
+      .set({
+        title: input.title,
+        author: input.author,
+        image: input.image,
+        quantity: input.quantity,
+      })
+      .where(eq(books.id, input.id))
 
     revalidatePath("/")
 

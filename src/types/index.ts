@@ -62,7 +62,6 @@ export type DrizzleWhere<T> =
   | ((aliases: T) => SQL<T> | undefined)
   | undefined
 
-
 export interface Plan {
   title: string
   description: string

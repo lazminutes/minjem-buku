@@ -45,17 +45,21 @@ export function DeleteBooksDialog({
   const [isDeletePending, startDeleteTransition] = React.useTransition()
   const isDesktop = useMediaQuery("(min-width: 640px)")
 
-  const onDelete = async () => {
-    const { error } = await deleteBook({
-      id: book.id,
+  function onDelete() {
+    startDeleteTransition(async () => {
+      const { error } = await deleteBook({
+        id: book.id,
+      })
+
+      if (error) {
+        toast.error(error)
+        return
+      }
+
+      props.onOpenChange?.(false)
+      toast.success("Buku berhasil dihapus")
+      onSuccess?.()
     })
-    if (error) {
-      toast.error(error)
-      return
-    }
-    props.onOpenChange?.(false)
-    toast.success("Buku berhasil dihapus")
-    onSuccess?.()
   }
 
   if (isDesktop) {

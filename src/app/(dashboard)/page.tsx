@@ -21,25 +21,25 @@ export default async function DashboardPage() {
           title="Total Revenue"
           value={"1"}
           description="Total revenue for your store"
-          icon="dollarSign"
+          icon="reader"
         />
         <OverviewCard
           title="Sales"
           value={"1"}
           description="Total sales for your store"
-          icon="credit"
+          icon="reader"
         />
         <OverviewCard
           title="Orders"
           value={"1"}
           description="Total orders for your store"
-          icon="cart"
+          icon="reader"
         />
         <OverviewCard
           title="Customers"
           value={"1"}
           description="Total customers for your store"
-          icon="activity"
+          icon="reader"
         />
       </div>
     </div>

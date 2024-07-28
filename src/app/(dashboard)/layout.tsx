@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation"
 import * as React from "react"
+import { redirect } from "next/navigation"
 
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -8,19 +8,13 @@ import { DashboardHeader } from "./_components/dashboard-header"
 import { DashboardSidebar } from "./_components/dashboard-sidebar"
 import { DashboardSidebarSheet } from "./_components/dashboard-sidebar-sheet"
 
-interface DashboardStoreLayoutProps {
-  params: {
-    storeId: string
-  }
+interface DashboardLayoutProps {
   children: React.ReactNode
 }
 
-export default async function DashboardStoreLayout({
+export default async function DashboardLayout({
   children,
-  params,
-}: DashboardStoreLayoutProps) {
-  const storeId = decodeURIComponent(params.storeId)
-
+}: DashboardLayoutProps) {
   // const user = await getCachedUser()
   const user = "Lazarus"
 
@@ -31,19 +25,18 @@ export default async function DashboardStoreLayout({
   return (
     <SidebarProvider>
       <div className="grid min-h-screen w-full lg:grid-cols-[17.5rem_1fr]">
-        <DashboardSidebar
-          storeId={storeId}
-          className="top-0 z-30 hidden flex-col gap-4 border-r border-border/60 lg:sticky lg:block"
-        >
-          <React.Suspense fallback={<Skeleton className="h-10 w-full" />}>
-          </React.Suspense>
+        <DashboardSidebar className="top-0 z-30 hidden flex-col gap-4 border-r border-border/60 lg:sticky lg:block">
+          <React.Suspense
+            fallback={<Skeleton className="h-10 w-full" />}
+          ></React.Suspense>
         </DashboardSidebar>
         <div className="flex flex-col">
-          <DashboardHeader user={user} storeId={storeId}>
+          <DashboardHeader user={user}>
             <DashboardSidebarSheet className="lg:hidden">
-              <DashboardSidebar storeId={storeId}>
-                <React.Suspense fallback={<Skeleton className="h-10 w-full" />}>
-                </React.Suspense>
+              <DashboardSidebar>
+                <React.Suspense
+                  fallback={<Skeleton className="h-10 w-full" />}
+                ></React.Suspense>
               </DashboardSidebar>
             </DashboardSidebarSheet>
           </DashboardHeader>

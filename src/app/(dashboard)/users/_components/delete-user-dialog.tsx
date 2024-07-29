@@ -1,11 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { Role } from "@/db/schema"
+import { type User } from "@/db/schema"
 import { ReloadIcon, TrashIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
-import { deleteRole } from "@/lib/actions/roles"
+import { deleteUser } from "@/lib/actions/users"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
 import {
@@ -29,26 +29,26 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 
-interface DeleteRoleDialogProps
+interface DeleteUserDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  role: Role
+  user: User
   showTrigger?: boolean
   onSuccess?: () => void
 }
 
-export function DeleteRoleDialog({
-  role,
+export function DeleteUserDialog({
+  user,
   showTrigger = true,
   onSuccess,
   ...props
-}: DeleteRoleDialogProps) {
+}: DeleteUserDialogProps) {
   const [isDeletePending, startDeleteTransition] = React.useTransition()
   const isDesktop = useMediaQuery("(min-width: 640px)")
 
   function onDelete() {
     startDeleteTransition(async () => {
-      const { error } = await deleteRole({
-        id: role.id,
+      const { error } = await deleteUser({
+        id: user.id,
       })
 
       if (error) {
@@ -57,7 +57,7 @@ export function DeleteRoleDialog({
       }
 
       props.onOpenChange?.(false)
-      toast.success("Role berhasil dihapus")
+      toast.success("User berhasil dihapus")
       onSuccess?.()
     })
   }
@@ -77,7 +77,7 @@ export function DeleteRoleDialog({
             <DialogTitle>Are you absolutely sure?</DialogTitle>
             <DialogDescription>
               This action cannot be undone. This will permanently delete your
-              role
+              user
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:space-x-0">
@@ -117,7 +117,7 @@ export function DeleteRoleDialog({
         <DrawerHeader>
           <DrawerTitle>Are you absolutely sure?</DrawerTitle>
           <DrawerDescription>
-            This action cannot be undone. This will permanently delete your role
+            This action cannot be undone. This will permanently delete your user
           </DrawerDescription>
         </DrawerHeader>
         <DrawerFooter className="gap-2 sm:space-x-0">

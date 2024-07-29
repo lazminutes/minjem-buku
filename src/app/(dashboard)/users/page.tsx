@@ -1,6 +1,8 @@
 "use memo"
 
 import * as React from "react"
+import { redirect } from "next/navigation"
+import { auth } from "@/auth"
 
 import { getUsers } from "@/lib/queries/users"
 import { searchParamsSchema } from "@/lib/validations/search-params-schema"
@@ -10,8 +12,11 @@ import { Shell } from "@/components/shell"
 import { UsersTable } from "./_components/users-table"
 
 export default async function UsersPage({ searchParams }: any) {
+  const session = await auth()
+  if (session?.user?.role != "superadmin") {
+    redirect("/")
+  }
   const search = searchParamsSchema.parse(searchParams)
-
   const usersPromise = getUsers(search)
   return (
     <Shell className="gap-2">

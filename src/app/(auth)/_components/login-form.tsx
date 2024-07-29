@@ -4,9 +4,10 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import type { z } from "zod"
+import { toast } from "sonner"
 
-import { registerSchema } from "@/lib/validations/auth"
+import { login } from "@/lib/actions/register"
+import { loginSchema, LoginSchema } from "@/lib/validations/auth"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -20,47 +21,29 @@ import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
 import { PasswordInput } from "@/components/password-input"
 
-type Inputs = z.infer<typeof registerSchema>
-
 export function LoginForm() {
   const router = useRouter()
-  //   const { isLoaded, signIn, setActive } = useSignIn()
-  const [loading, setLoading] = React.useState(false)
+  const [isLoginPending, startLoginTransition] = React.useTransition()
 
-  // react-hook-form
-  const form = useForm<Inputs>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   })
 
-  async function onSubmit(data: Inputs) {
-    console.log(data)
-    // if (!isLoaded) return
+  async function onSubmit(input: LoginSchema) {
+    startLoginTransition(async () => {
+      const res = await login(input)
 
-    // setLoading(true)
+      if (res?.error) {
+        toast.error(res?.error)
+        return
+      }
 
-    // try {
-    //   const result = await signIn.create({
-    //     identifier: data.email,
-    //     password: data.password,
-    //   })
-
-    //   if (result.status === "complete") {
-    //     await setActive({ session: result.createdSessionId })
-
-    //     router.push(`${window.location.origin}/`)
-    //   } else {
-    //     /*Investigate why the login hasn't completed */
-    //     console.log(result)
-    //   }
-    // } catch (err) {
-    //   showErrorToast(err)
-    // } finally {
-    //   setLoading(false)
-    // }
+      toast.success("Welcome, silahkan pinjam")
+    })
   }
 
   return (
@@ -96,8 +79,8 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="mt-2" disabled={loading}>
-          {loading && (
+        <Button type="submit" className="mt-2" disabled={isLoginPending}>
+          {isLoginPending && (
             <Icons.spinner
               className="mr-2 size-4 animate-spin"
               aria-hidden="true"

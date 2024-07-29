@@ -1,13 +1,13 @@
 "use server"
 
 import { unstable_noStore as noStore, revalidatePath } from "next/cache"
+import { signIn } from "@/auth"
 import { db } from "@/db"
 import { users } from "@/db/schema"
 import { takeFirstOrThrow } from "@/db/utils"
-import { signIn } from "auth"
 import bcrypt from "bcryptjs"
 import { eq } from "drizzle-orm"
-import { toast } from "sonner"
+import { AuthError } from "next-auth"
 import * as z from "zod"
 
 import { getErrorMessage } from "@/lib/handle-error"
@@ -38,6 +38,7 @@ export const register = async (input: z.infer<typeof registerSchema>) => {
           name: input.name,
           email: input.email,
           password: hashedPassword,
+          role: "siswa",
         })
         .returning({
           id: users.id,
@@ -59,6 +60,7 @@ export const register = async (input: z.infer<typeof registerSchema>) => {
 }
 
 export const login = async (input: z.infer<typeof loginSchema>) => {
+  noStore()
   const validatedFields = loginSchema.safeParse(input)
 
   if (!validatedFields.success) {
@@ -74,14 +76,23 @@ export const login = async (input: z.infer<typeof loginSchema>) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: `${window.location.origin}/`,
+      redirectTo: "/",
     })
-
-    return {
-      data: null,
-      error: null,
+  } catch (err) {
+    if (err instanceof AuthError) {
+      switch (err.type) {
+        case "CredentialsSignin":
+          return {
+            data: null,
+            error: "Email atau password salah",
+          }
+        default:
+          return {
+            data: null,
+            error: "Something went wrong",
+          }
+      }
     }
-  } catch (error) {
-    toast.error("Email atau password salah")
+    throw err
   }
 }

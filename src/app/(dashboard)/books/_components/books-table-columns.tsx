@@ -2,24 +2,14 @@
 
 import * as React from "react"
 import { type Book } from "@/db/schema"
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { PinjamBukuDialog } from "@/app/(dashboard)/books/_components/pinjam-buku-dialog"
 import { PreviewBooksDialog } from "@/app/(dashboard)/books/_components/preview-book-dialog"
-import { UpdateBookSheet } from "@/app/(dashboard)/books/_components/update-book-sheet"
-
-import { DeleteBooksDialog } from "./delete-books-dialog"
 
 export function getColumns(): ColumnDef<Book>[] {
-  return [
+  const columns = [
     {
       accessorKey: "title",
       header: () => <span>Judul</span>,
@@ -63,10 +53,21 @@ export function getColumns(): ColumnDef<Book>[] {
       accessorKey: "borrow",
       header: () => <span>Pinjam</span>,
       cell: ({ row }) => {
+        const [showPinjamBukuDialog, setshowPinjamBukuDialog] =
+          React.useState(false)
         return (
           <div className="flex items-center">
+            <PinjamBukuDialog
+              open={showPinjamBukuDialog}
+              onOpenChange={setshowPinjamBukuDialog}
+              book={row.original}
+              showTrigger={false}
+              onSuccess={() => row.toggleSelected(false)}
+            />
             {row.getValue("quantity") ? (
-              <Button>Pinjam Buku</Button>
+              <Button onClick={() => setshowPinjamBukuDialog(true)}>
+                Pinjam Buku
+              </Button>
             ) : (
               <span className="truncate font-medium">Kosong</span>
             )}
@@ -75,59 +76,19 @@ export function getColumns(): ColumnDef<Book>[] {
       },
     },
     {
-      id: "actions",
-      cell: function Cell({ row }) {
-        const [isUpdatePending, startUpdateTransition] = React.useTransition()
-        const [showUpdateBookSheet, setShowUpdateBookSheet] =
-          React.useState(false)
-        const [showDeleteBookDialog, setShowDeleteBookDialog] =
-          React.useState(false)
+      accessorKey: "preview",
+      header: () => <span>Preview</span>,
+      cell: ({ row }) => {
         const [previewBookDialog, setPreviewBookDialog] = React.useState(false)
-
         return (
-          <div className="flex items-center gap-2">
-            <UpdateBookSheet
-              open={showUpdateBookSheet}
-              onOpenChange={setShowUpdateBookSheet}
-              book={row.original}
-            />
-            <DeleteBooksDialog
-              open={showDeleteBookDialog}
-              onOpenChange={setShowDeleteBookDialog}
-              book={row.original}
-              showTrigger={false}
-              onSuccess={() => row.toggleSelected(false)}
-            />
-            <PreviewBooksDialog
-              open={previewBookDialog}
-              onOpenChange={setPreviewBookDialog}
-              book={row.original}
-            />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  aria-label="Open menu"
-                  variant="ghost"
-                  className="flex size-8 p-0 data-[state=open]:bg-muted"
-                >
-                  <DotsHorizontalIcon className="size-4" aria-hidden="true" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem onSelect={() => setShowUpdateBookSheet(true)}>
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onSelect={() => setShowDeleteBookDialog(true)}
-                >
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <PreviewBooksDialog
+            open={previewBookDialog}
+            onOpenChange={setPreviewBookDialog}
+            book={row.original}
+          />
         )
       },
     },
   ]
+  return columns
 }

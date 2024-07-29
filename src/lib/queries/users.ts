@@ -3,7 +3,7 @@ import "server-only"
 import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { users } from "@/db/schema"
-import { asc, count } from "drizzle-orm"
+import { count, desc } from "drizzle-orm"
 
 import { GetUsersSchema } from "@/lib/validations/users"
 
@@ -19,7 +19,7 @@ export async function getUsers(input: GetUsersSchema) {
         .from(users)
         .limit(per_page)
         .offset(offset)
-        .orderBy(asc(users.role))
+        .orderBy(desc(users.role))
 
       const total = await tx
         .select({

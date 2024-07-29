@@ -46,12 +46,6 @@ export function DashboardSidebar({
       icon: "avatar",
       active: segments.includes("users"),
     },
-    {
-      title: "Roles",
-      href: `/roles`,
-      icon: "settings",
-      active: segments.includes("roles"),
-    },
   ]
 
   return (

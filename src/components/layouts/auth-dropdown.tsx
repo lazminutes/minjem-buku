@@ -1,8 +1,11 @@
-import { ExitIcon } from "@radix-ui/react-icons"
-import Link from "next/link"
 import * as React from "react"
+import Link from "next/link"
+import { auth } from "@/auth"
+import { ExitIcon } from "@radix-ui/react-icons"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { Button, type ButtonProps } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -10,28 +13,22 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
 
 interface AuthDropdownProps
   extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
-    ButtonProps {
-  user: any
-}
+    ButtonProps {}
 
-export async function AuthDropdown({
-  user,
-  className,
-  ...props
-}: AuthDropdownProps) {
-  if (!user) {
+export async function AuthDropdown({ className, ...props }: AuthDropdownProps) {
+  const session = await auth()
+  if (!session?.user) {
     return (
       <Button size="sm" className={cn(className)} {...props} asChild>
-        <Link href="/signin">
-          Sign In
-          <span className="sr-only">Sign In</span>
+        <Link href="/login">
+          Login
+          <span className="sr-only">Login</span>
         </Link>
       </Button>
     )
@@ -46,20 +43,22 @@ export async function AuthDropdown({
           {...props}
         >
           <Avatar className="size-8">
-            <AvatarImage src={user.imageUrl} alt={user.username ?? "L"} />
-            <AvatarFallback>L</AvatarFallback>
+            <AvatarFallback>
+              {session?.user?.name[0]?.toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
+          <div className="flex flex-col space-y-2">
             <p className="text-sm font-medium leading-none">
-              Lazarus
+              {session?.user?.name}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              lazmimnutes@gmail.com
+              {session?.user?.email}
             </p>
+            <Badge className="uppercase">{session?.user?.role}</Badge>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -71,11 +70,10 @@ export async function AuthDropdown({
               ))}
             </div>
           }
-        >
-        </React.Suspense>
+        ></React.Suspense>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/signout">
+          <Link href="/logout">
             <ExitIcon className="mr-2 size-4" aria-hidden="true" />
             Log out
           </Link>

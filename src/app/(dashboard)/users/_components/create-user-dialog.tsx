@@ -6,7 +6,7 @@ import { PlusIcon, ReloadIcon } from "@radix-ui/react-icons"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
-import { register } from "@/lib/actions/auth"
+import { register } from "@/lib/actions/register"
 import { RegisterSchema, registerSchema } from "@/lib/validations/auth"
 import { Button } from "@/components/ui/button"
 import {

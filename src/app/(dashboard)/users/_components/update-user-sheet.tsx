@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { User } from "@/db/schema"
+import { users, type User } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ReloadIcon } from "@radix-ui/react-icons"
 import { useForm } from "react-hook-form"
@@ -18,6 +18,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Sheet,
   SheetClose,
@@ -27,7 +36,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { Textarea } from "@/components/ui/textarea"
 
 interface UpdateUserSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
@@ -42,7 +50,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
     defaultValues: {
       name: user.name ?? "",
       email: user.email ?? "",
-      role: user.role ?? "",
+      role: user.role,
     },
   })
 
@@ -60,7 +68,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
 
       form.reset()
       props.onOpenChange?.(false)
-      toast.success("Buku berhasil diupdate")
+      toast.success("User berhasil diupdate")
     })
   }
 
@@ -83,11 +91,24 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>Nama</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Negeri Para Bedebah"
-                      className="resize-none"
+                    <Input type="text" placeholder="Lazarus" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />{" "}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="hi@lazminutes.com"
                       {...field}
                     />
                   </FormControl>
@@ -97,17 +118,33 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
             />
             <FormField
               control={form.control}
-              name="email"
+              name="role"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Penulis</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Terel Liye"
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
+                  <FormLabel>Role</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={`${field.value}`}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="uppercase">
+                        <SelectValue placeholder="Select a role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        {users.role.enumValues.map((item) => (
+                          <SelectItem
+                            key={item}
+                            value={item}
+                            className="uppercase"
+                          >
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

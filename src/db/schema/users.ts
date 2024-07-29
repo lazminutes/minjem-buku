@@ -1,4 +1,3 @@
-import { roles } from "@/db/schema/roles"
 import { lifecycleDates } from "@/db/schema/utils"
 import {
   integer,
@@ -18,8 +17,9 @@ export const users = pgTable("users", {
   name: text("name"),
   email: text("email").unique(),
   password: text("password"),
-  role: varchar("role", { length: 30 }).references(() => roles.id, {
-    onDelete: "cascade",
+  role: varchar("role", {
+    length: 30,
+    enum: ["superadmin", "siswa"],
   }),
   ...lifecycleDates,
 })

@@ -1,5 +1,4 @@
 import * as React from "react"
-import { redirect } from "next/navigation"
 
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -15,13 +14,6 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
-  // const user = await getCachedUser()
-  const user = "Lazarus"
-
-  if (!user) {
-    redirect("/signin")
-  }
-
   return (
     <SidebarProvider>
       <div className="grid min-h-screen w-full lg:grid-cols-[17.5rem_1fr]">
@@ -31,7 +23,7 @@ export default async function DashboardLayout({
           ></React.Suspense>
         </DashboardSidebar>
         <div className="flex flex-col">
-          <DashboardHeader user={user}>
+          <DashboardHeader>
             <DashboardSidebarSheet className="lg:hidden">
               <DashboardSidebar>
                 <React.Suspense

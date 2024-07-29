@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
-import { register } from "@/lib/actions/auth"
+import { register } from "@/lib/actions/register"
 import { RegisterSchema, registerSchema } from "@/lib/validations/auth"
 import { Button } from "@/components/ui/button"
 import {
@@ -101,8 +101,8 @@ export function RegisterForm() {
               aria-hidden="true"
             />
           )}
-          Login
-          <span className="sr-only">Login</span>
+          Daftar
+          <span className="sr-only">Daftar</span>
         </Button>
       </form>
     </Form>

@@ -1,16 +1,15 @@
 import "server-only"
 
+import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { books } from "@/db/schema"
 import { asc, count } from "drizzle-orm"
-import { unstable_noStore as noStore } from "next/cache"
 
 import { GetBooksSchema } from "@/lib/validations/books"
 
-
 export async function getBooks(input: GetBooksSchema) {
   noStore()
-  const { page, per_page} = input
+  const { page, per_page } = input
 
   try {
     const offset = (page - 1) * per_page
@@ -20,9 +19,7 @@ export async function getBooks(input: GetBooksSchema) {
         .from(books)
         .limit(per_page)
         .offset(offset)
-        .orderBy(
-         asc(books.title)
-        )
+        .orderBy(asc(books.title))
 
       const total = await tx
         .select({

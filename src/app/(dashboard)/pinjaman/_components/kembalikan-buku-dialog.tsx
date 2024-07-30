@@ -2,11 +2,11 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { type Book } from "@/db/schema"
+import { Loans } from "@/db/schema"
 import { ReloadIcon, TrashIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
-import { pinjam } from "@/lib/actions/pinjam"
+import { kembalikan } from "@/lib/actions/return"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { useUser } from "@/hooks/use-user"
 import { Button } from "@/components/ui/button"
@@ -31,29 +31,28 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 
-interface PinjamBukuDialogProps
+interface KembalikanBukuDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  book: Book
+  loans: Loans
   showTrigger?: boolean
   onSuccess?: () => void
 }
 
-export function PinjamBukuDialog({
-  book,
+export function KembalikanBukuDialog({
+  loans,
   showTrigger = true,
   onSuccess,
   ...props
-}: PinjamBukuDialogProps) {
+}: KembalikanBukuDialogProps) {
   const [isPinjamPending, startPinjamTransition] = React.useTransition()
   const isDesktop = useMediaQuery("(min-width: 640px)")
   const user = useUser()
 
   function onPinjam() {
     startPinjamTransition(async () => {
-      const { error } = await pinjam({
-        userId: user?.id as string,
-        bookId: book.id,
-        returnDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      const { error } = await kembalikan({
+        id: loans.id,
+        bookId: loans.bookId,
       })
 
       if (error) {
@@ -81,8 +80,8 @@ export function PinjamBukuDialog({
           <DialogHeader>
             <DialogTitle>Anda yakin ingin meminjam buku ini?</DialogTitle>
             <DialogDescription>
-              Waktu pengembalian adalah 30 hari dan dikenakan denda apabila
-              melebihi waktu
+              Terima kasih telah mengembalikan buku ini.
+              {/* {JSON.stringify(book)} */}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:space-x-0">
@@ -101,7 +100,7 @@ export function PinjamBukuDialog({
                     aria-hidden="true"
                   />
                 )}
-                Pinjam
+                Kembalikan
               </Button>
             ) : (
               <Button asChild>

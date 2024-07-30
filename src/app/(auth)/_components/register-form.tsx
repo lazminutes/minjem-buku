@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
+import { redirect } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -22,7 +22,6 @@ import { Icons } from "@/components/icons"
 import { PasswordInput } from "@/components/password-input"
 
 export function RegisterForm() {
-  const router = useRouter()
   const [isRegisterPending, startRegisterTransition] = React.useTransition()
 
   const form = useForm<RegisterSchema>({
@@ -44,7 +43,7 @@ export function RegisterForm() {
       }
 
       toast.success("Akun berhasil dibuat")
-      router.push(`${window.location.origin}/`)
+      redirect("/login")
     })
   }
 

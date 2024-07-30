@@ -6,7 +6,7 @@ import { type Book } from "@/db/schema"
 import { type DataTableFilterField } from "@/types"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 
-import { getBooks } from "@/lib/queries/books"
+import { getPinjaman } from "@/lib/queries/bookss"
 import { useDataTable } from "@/hooks/use-data-table"
 import { Button } from "@/components/ui/button"
 import {
@@ -25,7 +25,7 @@ import { BooksTableToolbarActions } from "./books-table-toolbar-actions"
 
 interface BooksTableProps {
   session?: any
-  booksPromise: ReturnType<typeof getBooks>
+  booksPromise: ReturnType<typeof getPinjaman>
 }
 
 export function BooksTable({ booksPromise, session }: BooksTableProps) {

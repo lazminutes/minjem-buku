@@ -4,7 +4,6 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
 
 import { login } from "@/lib/actions/register"
 import { loginSchema, LoginSchema } from "@/lib/validations/auth"
@@ -38,11 +37,10 @@ export function LoginForm() {
       const res = await login(input)
 
       if (res?.error) {
-        toast.error(res?.error)
+        alert(res?.error)
         return
       }
-
-      toast.success("Welcome, silahkan pinjam")
+      window.location.replace("/")
     })
   }
 

@@ -1,5 +1,7 @@
 import { type Metadata } from "next"
 import Link from "next/link"
+import { redirect } from "next/navigation"
+import { auth } from "@/auth"
 import { env } from "@/env.js"
 
 import {
@@ -20,7 +22,12 @@ export const metadata: Metadata = {
   description: "Login to your account",
 }
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const session = await auth()
+
+  if (session?.user) {
+    if (Object.keys(session?.user).length > 0) redirect("/")
+  }
   return (
     <Shell className="max-w-lg">
       <Card>

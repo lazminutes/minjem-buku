@@ -3,9 +3,9 @@
 import * as React from "react"
 import Link from "next/link"
 import { useSelectedLayoutSegments } from "next/navigation"
-import { type SidebarNavItem } from "@/types"
 
 import { cn } from "@/lib/utils"
+import { useUser } from "@/hooks/use-user"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Icons } from "@/components/icons"
 import { SidebarNav } from "@/components/layouts/sidebar-nav"
@@ -19,34 +19,74 @@ export function DashboardSidebar({
   className,
   ...props
 }: DashboardSidebarProps) {
+  const user = useUser()
   const segments = useSelectedLayoutSegments()
 
-  const sidebarNav: SidebarNavItem[] = [
-    {
-      title: "Dashboard",
-      href: `/`,
-      icon: "dashboard",
-      active: segments.length === 0,
-    },
-    {
-      title: "Books",
-      href: `/books`,
-      icon: "reader",
-      active: segments.includes("books"),
-    },
-    {
-      title: "Pinjaman",
-      href: `/pinjaman`,
-      icon: "bookmark",
-      active: segments.includes("pinjaman"),
-    },
-    {
-      title: "Users",
-      href: `/users`,
-      icon: "avatar",
-      active: segments.includes("users"),
-    },
-  ]
+  let sidebarNav
+  if (!user) {
+    sidebarNav = [
+      {
+        title: "Dashboard",
+        href: `/`,
+        icon: "dashboard",
+        active: segments.length === 0,
+      },
+      {
+        title: "Books",
+        href: `/books`,
+        icon: "reader",
+        active: segments.includes("books"),
+      },
+    ]
+  } else if (user?.role === "siswa") {
+    sidebarNav = [
+      {
+        title: "Dashboard",
+        href: `/`,
+        icon: "dashboard",
+        active: segments.length === 0,
+      },
+      {
+        title: "Books",
+        href: `/books`,
+        icon: "reader",
+        active: segments.includes("books"),
+      },
+      {
+        title: "Pinjaman",
+        href: `/pinjaman`,
+        icon: "bookmark",
+        active: segments.includes("pinjaman"),
+      },
+    ]
+  } else {
+    sidebarNav = [
+      {
+        title: "Dashboard",
+        href: `/`,
+        icon: "dashboard",
+        active: segments.length === 0,
+      },
+      {
+        title: "Books",
+        href: `/books`,
+        icon: "reader",
+        active: segments.includes("books"),
+      },
+      {
+        title: "Pinjaman",
+        href: `/pinjaman`,
+        icon: "bookmark",
+        active: segments.includes("pinjaman"),
+      },
+      {
+        title: "Users",
+        href: `/users`,
+        icon: "avatar",
+        active: segments.includes("users"),
+      },
+    ]
+  }
 
   return (
     <aside className={cn("h-screen w-full", className)} {...props}>

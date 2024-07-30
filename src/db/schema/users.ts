@@ -1,4 +1,6 @@
+import { loans } from "@/db/schema/loans"
 import { lifecycleDates } from "@/db/schema/utils"
+import { relations } from "drizzle-orm"
 import {
   integer,
   pgTable,
@@ -23,6 +25,9 @@ export const users = pgTable("users", {
   }),
   ...lifecycleDates,
 })
+export const usersRelations = relations(users, ({ many }) => ({
+  loans: many(loans),
+}))
 
 export const accounts = pgTable(
   "account",

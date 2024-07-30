@@ -1,8 +1,9 @@
 "use client"
 
 import * as React from "react"
+import { type UseFormReturn } from "react-hook-form"
 
-import { useUploadFile } from "@/hooks/use-upload-file"
+import { CreateBookSchema } from "@/lib/validations/books"
 import {
   Form,
   FormControl,
@@ -13,14 +14,12 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { FileUploader } from "@/components/file-upload"
-import { UploadedFilesCard } from "@/components/uploaded-files-card"
 
 interface CreateBookFormProps
   extends Omit<React.ComponentPropsWithRef<"form">, "onSubmit"> {
   children: React.ReactNode
-  form: any
-  onSubmit: (data: any) => void
+  form: UseFormReturn<CreateBookSchema>
+  onSubmit: (data: CreateBookSchema) => void
 }
 
 export function CreateBookForm({
@@ -28,10 +27,6 @@ export function CreateBookForm({
   onSubmit,
   children,
 }: CreateBookFormProps) {
-  const { onUpload, progresses, uploadedFiles, isUploading } = useUploadFile(
-    "imageUploader",
-    { defaultUploadedFiles: [] }
-  )
   return (
     <Form {...form}>
       <form
@@ -89,25 +84,13 @@ export function CreateBookForm({
           control={form.control}
           name="image"
           render={({ field }) => (
-            <div className="space-y-6">
-              <FormItem className="w-full">
-                <FormLabel>Image</FormLabel>
-                <FormControl>
-                  <FileUploader
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    maxFileCount={4}
-                    maxSize={4 * 1024 * 1024}
-                    progresses={progresses}
-                    disabled={isUploading}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-              {uploadedFiles.length > 0 ? (
-                <UploadedFilesCard uploadedFiles={uploadedFiles} />
-              ) : null}
-            </div>
+            <FormItem>
+              <FormLabel>Image Link</FormLabel>
+              <FormControl>
+                <Textarea className="resize-none" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
         />
         {children}

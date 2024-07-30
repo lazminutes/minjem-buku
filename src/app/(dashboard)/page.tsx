@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { env } from "@/env.js"
 
+import { getTotalBooksCount } from "@/lib/actions/books"
+
 import { OverviewCard } from "./_components/overview-card"
 
 export const metadata: Metadata = {
@@ -10,6 +12,7 @@ export const metadata: Metadata = {
 }
 
 export default async function DashboardPage() {
+  const totalBooks = await getTotalBooksCount()
   return (
     <div className="space-y-6 p-1">
       <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
@@ -17,27 +20,9 @@ export default async function DashboardPage() {
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <OverviewCard
-          title="Total Revenue"
-          value={"1"}
-          description="Total revenue for your store"
-          icon="reader"
-        />
-        <OverviewCard
-          title="Sales"
-          value={"1"}
-          description="Total sales for your store"
-          icon="reader"
-        />
-        <OverviewCard
-          title="Orders"
-          value={"1"}
-          description="Total orders for your store"
-          icon="reader"
-        />
-        <OverviewCard
-          title="Customers"
-          value={"1"}
-          description="Total customers for your store"
+          title="Books"
+          value={String(totalBooks)}
+          description="Total Buku yang Ada di Perpustakaan"
           icon="reader"
         />
       </div>

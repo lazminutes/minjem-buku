@@ -159,6 +159,7 @@ export async function getTotalBooksCount() {
 
     return totalBooks
   } catch (err) {
+    console.log(err)
     throw new Error(`Gagal`)
   }
 }

@@ -18,7 +18,7 @@ export const updateBookSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1).optional().nullable(),
   author: z.string().min(1).optional().nullable(),
-  image: z.string().optional().nullable(),
+  image: z.array(z.instanceof(File)),
 
   quantity: z.coerce.number().int().optional(),
 })

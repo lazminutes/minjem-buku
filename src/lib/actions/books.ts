@@ -105,6 +105,29 @@ export async function updateImage(input: UpdateBookSchema) {
   }
 }
 
+export async function editImage(input: UpdateBookSchema) {
+  noStore()
+  try {
+    await db
+      .update(books)
+      .set({
+        image: input.image,
+      })
+      .where(eq(books.id, input.id as string))
+
+    revalidatePath("/")
+
+    return {
+      data: null,
+      error: null,
+    }
+  } catch (err) {
+    return {
+      data: null,
+      error: getErrorMessage(err),
+    }
+  }
+}
 export async function deleteBook(input: { id: string }) {
   try {
     await db.transaction(async (tx) => {

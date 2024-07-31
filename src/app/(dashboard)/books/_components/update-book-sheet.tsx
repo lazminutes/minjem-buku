@@ -9,6 +9,7 @@ import { toast } from "sonner"
 
 import { updateBook } from "@/lib/actions/books"
 import { updateBookSchema, UpdateBookSchema } from "@/lib/validations/books"
+import { useUploadFile } from "@/hooks/use-upload-file"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -29,6 +30,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
+import { FileUploader } from "@/components/file-upload"
+import { UploadedFilesCardEdit } from "@/components/uploaded-files-card-edit"
 
 interface UpdateBookSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
@@ -37,6 +40,10 @@ interface UpdateBookSheetProps
 
 export function UpdateBookSheet({ book, ...props }: UpdateBookSheetProps) {
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
+  const { onUpload, progresses, uploadedFiles, isUploading } = useUploadFile(
+    "imageUploader",
+    { defaultUploadedFiles: [] }
+  )
 
   const form = useForm<UpdateBookSchema>({
     resolver: zodResolver(updateBookSchema),
@@ -50,6 +57,8 @@ export function UpdateBookSheet({ book, ...props }: UpdateBookSheetProps) {
 
   function onSubmit(input: UpdateBookSchema) {
     startUpdateTransition(async () => {
+      await onUpload(input.image)
+      input.image = ""
       const { error } = await updateBook({
         id: book.id,
         ...input,
@@ -131,13 +140,28 @@ export function UpdateBookSheet({ book, ...props }: UpdateBookSheetProps) {
               control={form.control}
               name="image"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Image Link</FormLabel>
-                  <FormControl>
-                    <Textarea className="resize-none" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <div className="space-y-6">
+                  <FormItem className="w-full">
+                    <FormLabel>Image</FormLabel>
+                    <FormControl>
+                      <FileUploader
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        maxFileCount={4}
+                        maxSize={4 * 1024 * 1024}
+                        progresses={progresses}
+                        disabled={isUploading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                  {uploadedFiles.length > 0 ? (
+                    <UploadedFilesCardEdit
+                      uploadedFiles={uploadedFiles}
+                      id={book.id}
+                    />
+                  ) : null}
+                </div>
               )}
             />
             <SheetFooter className="gap-2 pt-2 sm:space-x-0">
